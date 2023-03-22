@@ -1,14 +1,14 @@
 {
-  "name": "JATE",
+  "name": "jate",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start:dev": "",
-    "start": "",
-    "server": "",
-    "build": "",
-    "install": "",
+    "start:dev": "concurrently \"cd client && npm run build\" \"cd server && npm start\"",
+    "start": "cd server && npm start",
+    "server": "cd server && npm start",
+    "build": "cd client && npm run build",
+    "install": "concurrently \"cd client && npm install\" \"cd server && npm install\"",
     "client": ""
   },
   "keywords": [],

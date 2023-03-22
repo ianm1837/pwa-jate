@@ -7,6 +7,8 @@ const { precacheAndRoute } = require('workbox-precaching/precacheAndRoute');
 
 precacheAndRoute(self.__WB_MANIFEST);
 
+console.log('🚀 Hello from service worker!');
+
 const pageCache = new CacheFirst({
   cacheName: 'page-cache',
   plugins: [
@@ -24,7 +26,17 @@ warmStrategyCache({
   strategy: pageCache,
 });
 
-registerRoute(({ request }) => request.mode === 'navigate', pageCache);
+const PageCacheCallBack = ({ request }) => {
+  console.log('🚀 PageCacheCallBack: ', request)
+
+  return request.mode === 'navigate'}
+
+registerRoute(PageCacheCallBack, pageCache);
 
 // TODO: Implement asset caching
-registerRoute();
+registerRoute(/\.(?:png|jpg|jpeg|svg)$/, new workbox.CacheFirst({
+    "cacheName": "images",
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 2
+    })]
+  }), 'GET');
