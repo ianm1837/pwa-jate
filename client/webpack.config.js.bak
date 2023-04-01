@@ -3,43 +3,41 @@ const WebpackPwaManifest = require('webpack-pwa-manifest');
 const path = require('path');
 const { InjectManifest } = require('workbox-webpack-plugin');
 
+// : Add and configure workbox plugins for a service worker and manifest file.
+// : Add CSS loaders and babel to webpack.
+
 module.exports = () => {
   return {
     mode: 'development',
-    devtool: 'eval-source-map',
-    // Entry point for files
+    devtool: 'source-map',
+
     entry: {
       main: './src/js/index.js',
-      install: './src/js/install.js',
+      install: './src/js/install.js'
     },
-    // Output for our bundles
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
-      // Webpack plugin that generates our html file and injects our bundles. 
       new HtmlWebpackPlugin({
         template: './index.html',
-        title: 'JATE'
+        title: 'jate'
       }),
-     
-      // Injects our custom service worker
+
       new InjectManifest({
         swSrc: './src-sw.js',
         swDest: 'src-sw.js',
+        
       }),
-
-      // Creates a manifest.json file.
       new WebpackPwaManifest({
-        fingerprints: false,
+        name: 'Just Another Text Editor',
         inject: true,
-        name: 'Just another text editor',
         short_name: 'JATE',
-        description: 'A simple text editor',
-        background_color: '#225ca3',
-        theme_color: '#225ca3',
+        background_color: '#7eb4e2',
+        theme_color: '#7eb4e2',
         start_url: './',
+        fingerprints: false,
         publicPath: './',
         icons: [
           {
@@ -52,7 +50,6 @@ module.exports = () => {
     ],
 
     module: {
-      // CSS loaders
       rules: [
         {
           test: /\.css$/i,
@@ -61,7 +58,6 @@ module.exports = () => {
         {
           test: /\.m?js$/,
           exclude: /node_modules/,
-          // We use babel-loader in order to use ES6.
           use: {
             loader: 'babel-loader',
             options: {

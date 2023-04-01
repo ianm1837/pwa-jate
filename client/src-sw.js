@@ -5,9 +5,15 @@ const { CacheableResponsePlugin } = require('workbox-cacheable-response');
 const { ExpirationPlugin } = require('workbox-expiration');
 const { precacheAndRoute } = require('workbox-precaching/precacheAndRoute');
 
-precacheAndRoute(self.__WB_MANIFEST);
+const manifest = self.__WB_MANIFEST;
+
+if(manifest) {
+  precacheAndRoute(manifest);
+  console.log('🚀 manifest: ', manifest);
+}
 
 console.log('🚀 Hello from service worker!');
+
 
 const pageCache = new CacheFirst({
   cacheName: 'page-cache',
@@ -22,21 +28,22 @@ const pageCache = new CacheFirst({
 });
 
 warmStrategyCache({
-  urls: ['/index.html', '/'],
+  urls: ['/index.html', '/', '/manifest.json'],
   strategy: pageCache,
 });
 
-const PageCacheCallBack = ({ request }) => {
-  console.log('🚀 PageCacheCallBack: ', request)
+registerRoute(({ request }) => request.mode === 'navigate', pageCache);
 
-  return request.mode === 'navigate'}
+// : Implement asset caching
+registerRoute(({url}) => url.pathname.startsWith('/assets/'),
+  new CacheFirst({
+    cacheName: "asset-cache",
+  })
+);
 
-registerRoute(PageCacheCallBack, pageCache);
-
-// TODO: Implement asset caching
-registerRoute(/\.(?:png|jpg|jpeg|svg)$/, new workbox.CacheFirst({
-    "cacheName": "images",
-    plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 2
-    })]
-  }), 'GET');
+registerRoute(
+  ({ url }) => url.pathname === '/manifest.json',
+  new CacheFirst({
+    cacheName: 'manifest-cache',
+  })
+);
