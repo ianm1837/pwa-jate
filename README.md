@@ -9,7 +9,7 @@ A simple text editor that you can install and/or use offline.
 Working demo: https://jate-demo.herokuapp.com/
 
 
-
+![Brave Browser - 2023-04-01 - 000050](https://user-images.githubusercontent.com/65581204/229327956-8ef45a83-8298-4137-9584-ac37dc80f9c8.png)
 
 
 ## Table of Contents
