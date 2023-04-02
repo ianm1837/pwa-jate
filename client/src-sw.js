@@ -5,15 +5,7 @@ const { CacheableResponsePlugin } = require('workbox-cacheable-response');
 const { ExpirationPlugin } = require('workbox-expiration');
 const { precacheAndRoute } = require('workbox-precaching/precacheAndRoute');
 
-const manifest = self.__WB_MANIFEST;
-
-if(manifest) {
-  precacheAndRoute(manifest);
-  console.log('🚀 manifest: ', manifest);
-}
-
-console.log('🚀 Hello from service worker!');
-
+precacheAndRoute(self.__WB_MANIFEST);
 
 const pageCache = new CacheFirst({
   cacheName: 'page-cache',
@@ -28,13 +20,13 @@ const pageCache = new CacheFirst({
 });
 
 warmStrategyCache({
-  urls: ['/index.html', '/', '/manifest.json'],
+  urls: ['/index.html', '/'],
   strategy: pageCache,
 });
 
 registerRoute(({ request }) => request.mode === 'navigate', pageCache);
 
-// : Implement asset caching
+// Implement asset caching
 registerRoute(({url}) => url.pathname.startsWith('/assets/'),
   new CacheFirst({
     cacheName: "asset-cache",
